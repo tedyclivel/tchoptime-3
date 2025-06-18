@@ -95,3 +95,56 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+
+
+
+
+backend/
+│── config/
+│   ├── firebaseAdminSDK.json  # Clé privée Firebase
+│   ├── cloudinaryConfig.js    # Configuration Cloudinary
+│   ├── emailConfig.js         # Config SendGrid/Nodemailer
+│
+│── functions/
+│   ├── generateMenuPDF.js     # Génération du menu en PDF
+│   ├── sendWeeklyMenu.js      # Envoi du PDF par email
+│   ├── aiAnalysis.js          # Analyse IA des repas et suggestions
+│   ├── updateStock.js         # Mise à jour automatique du stock
+│   ├── fetchNearbyMarkets.js  # Recherche des marchés proches via Google Maps
+│   ├── generateShoppingList.js # Génération intelligente de la liste de courses
+│   ├── textToSpeech.js        # Lecture vocale de la liste de marché
+│
+│── models/
+│   ├── users.js               # Schéma utilisateur et gestion des préférences alimentaires
+│   ├── recipes.js             # Structure des recettes et stockage des ingrédients
+│   ├── stock.js               # Modèle de gestion du stock
+│   ├── mealPlans.js           # Programmation des repas
+│   ├── markets.js             # Gestion des marchés et prix des ingrédients
+│   ├── shoppingLists.js       # Gestion et validation des listes de courses
+│   ├── iaInteractions.js      # Historique des requêtes IA
+│
+│── services/
+│   ├── firestoreService.js    # Connexion et requêtes vers Firestore
+│   ├── cloudFunctionsService.js # Gestion des appels Cloud Functions
+│   ├── emailService.js        # Service d’envoi des emails
+│   ├── aiService.js           # Intégration des API IA (Google AI, OpenAI)
+│   ├── mapsService.js         # API Google Maps pour calculer les trajets
+│   ├── textToSpeechService.js # API TTS pour lire les listes de marché
+│
+│── utils/
+│   ├── formatDate.js          # Utilitaires de gestion de dates
+│   ├── normalizeData.js       # Normalisation des données avant enregistrement
+│   ├── validateInputs.js      # Validation des entrées utilisateur
+│
+│── tests/
+│   ├── testGenerateMenuPDF.js # Tests de génération de PDF
+│   ├── testUpdateStock.js     # Vérification de la gestion des stocks
+│   ├── testAiAnalysis.js      # Tests de l'IA pour les repas
+│
+│── index.js                   # Point d'entrée du backend
+│── package.json                # Dépendances et scripts NPM
+│── README.md                   # Documentation du projet backend
+
+
+
