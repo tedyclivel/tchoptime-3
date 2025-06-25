@@ -1,52 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, collection, onSnapshot } from 'firebase/firestore';
+import { auth, firestore } from '../../backend/firebase';
+import { useTheme } from '@react-navigation/native';
 
-const App = () => {
+const DashboardScreen = ({ navigation }) => {
   const [meals, setMeals] = useState([]);
-  const [db, setDb] = useState(null);
-  const [authInstance, setAuthInstance] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [currentPage, setCurrentPage] = useState('dashboard');
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState('dashboard');
+  const { colors } = useTheme();
 
   useEffect(() => {
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-
-    try {
-      const app = initializeApp(firebaseConfig);
-      const firestoreDb = getFirestore(app);
-      const firebaseAuth = getAuth(app);
-
-      setDb(firestoreDb);
-      setAuthInstance(firebaseAuth);
-
-      const unsubscribeAuth = onAuthStateChanged(firebaseAuth, async (user) => {
-        if (user) {
-          setUserId(user.uid);
-        } else {
-          try {
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-              await signInWithCustomToken(firebaseAuth, __initial_auth_token);
-            } else {
-              await signInAnonymously(firebaseAuth);
-            }
-          } catch (error) {
-            console.error("Erreur de connexion Firebase:", error);
+    // Utilisation de l'auth et firestore centralisés
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUserId(user.uid);
+        // Souscription aux données des repas
+        const unsubscribeMeals = onSnapshot(
+          collection(firestore, 'users', user.uid, 'mealPlans'),
+          (snapshot) => {
+            const mealsData = snapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data()
+            }));
+            setMeals(mealsData);
+            setLoading(false);
+          },
+          (error) => {
+            console.error('Erreur lors de la récupération des repas:', error);
+            setLoading(false);
           }
-        }
-        setLoading(false);
-      });
+        );
 
-      return () => unsubscribeAuth();
-    } catch (error) {
-      console.error("Erreur d'initialisation Firebase:", error);
-      setLoading(false);
-    }
+        return () => unsubscribeMeals();
+      } else {
+        setMeals([]);
+        setUserId(null);
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribeAuth();
   }, []);
+
+  const handleMealPress = (meal) => {
+    navigation.navigate('MealPlanning', { mealId: meal.id });
+  };
 
   useEffect(() => {
     if (!db || !userId) return;
@@ -78,7 +77,7 @@ const App = () => {
     console.log(`Navigation vers ${page}`, params);
   };
 
-  const DashboardScreen = () => (
+  const DashboardContent = () => (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>🍽️ Mes repas planifiés</Text>
 
@@ -148,32 +147,50 @@ const App = () => {
     </View>
   );
 
-  switch (currentPage) {
-    case 'dashboard':
-      return <DashboardScreen />;
-    case 'MealPlanningScreen':
-      return <MealPlanningScreen mealId={null} />;
-    case 'ShoppingListScreen':
-      return <ShoppingListScreen />;
-    case 'ManageMealsScreen':
-      return <ManageMealsScreen />;
-    default:
-      return <DashboardScreen />;
-  }
+  return (
+    <View style={styles.container}>
+      {currentPage === 'dashboard' && <DashboardContent />}
+      {currentPage === 'MealPlanningScreen' && <MealPlanningScreen mealId={null} />}
+      {currentPage === 'ShoppingListScreen' && <ShoppingListScreen />}
+      {currentPage === 'ManageMealsScreen' && <ManageMealsScreen />}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#111827',
+    backgroundColor: '#FFFFFF',
     flexGrow: 1,
     alignItems: 'center',
   },
   title: {
     fontSize: 28,
-    color: '#c7d2fe',
+    color: '#4F46E5',
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
+  },
+  screenContainer: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+  },
+  screenTitle: {
+    fontSize: 24,
+    color: '#4F46E5',
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  backButton: {
+    backgroundColor: '#4F46E5',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   loadingContainer: {
