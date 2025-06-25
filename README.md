@@ -126,7 +126,7 @@ backend/
 │
 │── services/
 │   ├── firestoreService.js    # Connexion et requêtes vers Firestore
-│   ├── cloudFunctionsService.js # Gestion des appels Cloud Functions
+│   ├── cloudFunctionsService.js # TchopTime - Gestion des Repas Familiaux
 │   ├── emailService.js        # Service d’envoi des emails
 │   ├── aiService.js           # Intégration des API IA (Google AI, OpenAI)
 │   ├── mapsService.js         # API Google Maps pour calculer les trajets
