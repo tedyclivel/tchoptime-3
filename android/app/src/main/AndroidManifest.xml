@@ -1,7 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<!-- Optionnel, si vous voulez l'accès en arrière-plan : -->
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+<!-- Si vous prévoyez des mises à jour de localisation en arrière-plan, ajoutez aussi : -->
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
@@ -22,5 +31,8 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+       <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD9_hxiwsPiYIblHV67qUdH2dtOthmCcTo" />
     </application>
 </manifest>
